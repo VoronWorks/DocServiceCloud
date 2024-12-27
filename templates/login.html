@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html data-bs-theme="dark">
+<head>
+    <title>{{ 'Register' if flag else 'Login' }}</title>
+    <link href="../static/bootstrap.css" rel="stylesheet">
+</head>
+<body class="d-flex align-items-center justify-content-center vh-100">
+    <div class="card p-4" style="width: 300px;">
+        <form method="POST" action="{{ '/register' if flag else '/login' }}">
+            <h3 class="text-center">{{ 'Register' if flag else 'Login' }}</h3>
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" name="username" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" name="password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">{{ 'Register' if flag else 'Login' }}</button>
+            <a href="{{ '/login' if flag else '/register' }}">{{ 'login' if flag else 'register' }}</a>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html data-bs-theme="dark">
+<head>
+    <title>Edit document</title>
+    <link href="../static/bootstrap.css" rel="stylesheet">
+    <script src="../static/marked.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .document-container {
+            margin: 50px auto;
+            max-width: 800px;
+            padding: 20px;
+        }
+        .document-title {
+            font-size: 2rem;
+            font-weight: bold;
+            border: none;
+            outline: none;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .document-divider {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin: 20px 0;
+        }
+        .document-content {
+            border: none;
+            outline: none;
+            width: 100%;
+            height: 300px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .preview {
+            margin-top: 20px;
+            padding: 10px;
+            /* background-color: #f8f9fa; */
+            /* border: 1px solid #ddd; */
+        }
+    </style>
+</head>
+<body>
+    <div class="document-container">
+        <input id="document-id" hidden="true" value="{{ document.id if document else '' }}">
+        <input id="document-title" class="form-control document-title" placeholder="document Title" value="{{ document.title if document else '' }}">
+        <hr class="document-divider">
+        <div class="row">
+            <div class="col">
+                <textarea id="document-content" class="form-control document-content" placeholder="Write your content here...">{{ document.content if document else '' }}</textarea>
+            </div>
+            <div id="preview" class="preview d-none col"></div>
+        </div>
+        <button class="btn btn-secondary mt-3" onclick="(function(){window.location.href = '/';})();">Cancel</button>
+        <button class="btn btn-success mt-3" onclick="savedocument()">Save</button>
+        <button class="btn btn-primary mt-3" onclick="togglePreview()">Toggle Markdown</button>
+    </div>
+
+
+    <script>
+        const content = document.getElementById('document-content');
+        const preview = document.getElementById('preview');
+        content.addEventListener('input', () => {
+            const markdownText = content.value;
+            preview.innerHTML = marked.parse(markdownText);
+        });
+        function togglePreview() {
+            // preview.innerHTML = "Markdown:<br>"+marked.parse(content);
+            preview.classList.toggle('d-none');
+        }
+
+        function savedocument() {
+            const id = document.getElementById('document-id').value;
+            const title = document.getElementById('document-title').value;
+            const content = document.getElementById('document-content').value;
+
+            fetch('/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, title, content }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('document saved successfully!');
+                    window.location.href = '/';
+                } else {
+                    alert('Failed to save document');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
